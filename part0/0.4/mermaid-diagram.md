@@ -3,6 +3,13 @@ sequenceDiagram
     participant browser
     participant server
 
+    browser->>server: POST https://fullstack-exampleapp.herokuapp.com/new_note
+    activate server
+    server-->>browser: status 302
+    deactivate server
+
+    Note left of server: The server asks the browser to perform a new HTTP GET request to the 	address defined in the header's Location
+
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
     server-->>browser: HTML document
