@@ -7,7 +7,9 @@ sequenceDiagram
     activate server
     server-->>browser: Status 201
     deactivate server
+
 Note right of browser: The client makes a post request to the URL with a JSON payload of contents.
+
     Note left of server: The server runs the code to take the req.body contents and update the list. 
 
     browser->>server: most likely the same initial GET request but not defined in the documentation.
