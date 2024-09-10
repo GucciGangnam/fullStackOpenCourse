@@ -2,10 +2,11 @@
 
 
 // COMPONENT 
-export const Part = () => {
+export const Part = ({part, exercises}) => {
     return (
         <div className="Part">
-            Hello from Part!
+            <p>{part}</p>
+            <p>{exercises}</p>
         </div>
     )
 }
