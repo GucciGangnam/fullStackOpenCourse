@@ -1,10 +1,10 @@
 // IMPPRTS 
 
 // COMPONENT 
-export const Total = ({data}) => {
+export const Total = ({parts}) => {
     return (
         <div className="Total">
-            Total number of exercises : {(data.part1.exercises + data.part2.exercises + data.part3.exercises)}
+            Total number of exercises : {(parts[0].exercises + parts[1].exercises + parts[2].exercises)}
         </div>
     )
 }
