@@ -2,11 +2,11 @@
 
 
 // COMPONENT 
-export const Part = ({part, exercises}) => {
+export const Part = ({part}) => {
     return (
         <div className="Part">
-            <p>{part}</p>
-            <p>{exercises}</p>
+            <p>{part.name}</p>
+            <p>{part.exercises}</p>
         </div>
     )
 }
