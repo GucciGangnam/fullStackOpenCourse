@@ -8,17 +8,17 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
   // BUtton Handlers 
-  const handleIncreaseGood = () => { 
+  const handleIncreaseGood = () => {
     setGood((prev) => (prev + 1))
-      
+
   }
-  const handleIncreaseNeutral = () => { 
+  const handleIncreaseNeutral = () => {
     setNeutral((prev) => (prev + 1))
-      
+
   }
-  const handleIncreaseBad = () => { 
+  const handleIncreaseBad = () => {
     setBad((prev) => (prev + 1))
-      
+
   }
 
   return (
@@ -29,10 +29,16 @@ const App = () => {
       <button onClick={handleIncreaseBad}> Bad </button>
 
       <div className='Results'>
-        <h1> Statiustics </h1>
+        <h1> Votes </h1>
         <p>Good: {good}</p>
         <p>Neutral: {neutral}</p>
         <p>Bad: {bad}</p>
+
+        <h1> Statistics </h1>
+        <p>Total Votes: {good + neutral + bad}</p>
+        <p>Average: {((good - bad) / (good + neutral + bad || 1)).toFixed(2)}</p>
+        <p>Positive percent: {(good / (good + neutral + bad || 1) * 100).toFixed(2)} %</p>
+
       </div>
     </div>
   )
