@@ -11,17 +11,35 @@ const App = () => {
       number: '123456789'
     }
   ])
+  // SEARCH 
+  const [searchResult, setSearchResult] = useState([])
+  const [searchInput, setSearchInput] = useState('');
+  // Handle change search input 
+  const handleChangeSearchInput = (e) => {
+    const inputValue = e.target.value.toLowerCase();
+    setSearchInput(inputValue);
+    console.log(inputValue);
+    if (inputValue === '') {
+      setSearchResult([]);
+      return;
+    }
+    const updatedSearchResults = persons.filter(person => 
+      person.name.toLowerCase().startsWith(inputValue)
+    );
+    setSearchResult(updatedSearchResults);
+  };
+
+
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
-
   // Handle change name 
   const handleChangename = (e) => {
     setNewName(e.target.value)
   }
-// handle chnage number
-const handleChangeNumber = (e) => { 
-  setNewNumber(e.target.value)
-}
+  // handle chnage number
+  const handleChangeNumber = (e) => {
+    setNewNumber(e.target.value)
+  }
 
   // SUbmit new name 
   const submitName = (e) => {
@@ -61,11 +79,21 @@ const handleChangeNumber = (e) => {
         </div>
       </form>
 
+      <h2> Search </h2>
+      <input
+        placeholder="Search Name"
+        value={searchInput}
+        onChange={handleChangeSearchInput}
+      />
+      {searchResult.map((result) => ( 
+        <p key={result.name}>{result.name}: {result.number}</p>
+      ))}
+
       <h2>Numbers</h2>
       {persons.map((person) => (
         <p key={person.name}>
           {person.name}: {person.number}
-          
+
         </p>
       ))}
     </div>
