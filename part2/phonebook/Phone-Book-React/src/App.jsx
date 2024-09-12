@@ -2,7 +2,13 @@
 // IMPORTS 
 // Styles 
 import "./App.css"
+// React
 import { useState } from 'react'
+// Componenets 
+import { Form } from "./componenets/Form"
+import { Search } from "./componenets/Search"
+import { Contacts } from "./componenets/Contacts"
+
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -23,7 +29,7 @@ const App = () => {
       setSearchResult([]);
       return;
     }
-    const updatedSearchResults = persons.filter(person => 
+    const updatedSearchResults = persons.filter(person =>
       person.name.toLowerCase().startsWith(inputValue)
     );
     setSearchResult(updatedSearchResults);
@@ -58,44 +64,15 @@ const App = () => {
 
   return (
     <div className='App'>
+
       <h2>Phonebook</h2>
+      <Form submitName={submitName} newName={newName} handleChangename={handleChangename} handleChangeNumber={handleChangeNumber} newNumber={newNumber} />
 
-      <form
-        onSubmit={submitName}>
-        <div>
-          name: <input
-            placeholder="Type name here"
-            value={newName}
-            onChange={handleChangename} />
-        </div>
-        <div>
-          number: <input
-            placeholder="Type number here"
-            value={newNumber}
-            onChange={handleChangeNumber} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Search searchInput={searchInput} handleChangeSearchInput={handleChangeSearchInput} searchResult={searchResult}   />
 
-      <h2> Search </h2>
-      <input
-        placeholder="Search Name"
-        value={searchInput}
-        onChange={handleChangeSearchInput}
-      />
-      {searchResult.map((result) => ( 
-        <p key={result.name}>{result.name}: {result.number}</p>
-      ))}
 
-      <h2>Numbers</h2>
-      {persons.map((person) => (
-        <p key={person.name}>
-          {person.name}: {person.number}
+      <Contacts persons={persons}/>
 
-        </p>
-      ))}
     </div>
   )
 }

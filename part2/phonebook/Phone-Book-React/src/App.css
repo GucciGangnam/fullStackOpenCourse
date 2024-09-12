@@ -44,6 +44,24 @@
   color: #888;
 }
 .App{ 
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+form{ 
+  background-color: rgb(246, 240, 226);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.Search{ 
+  background-color: rgb(246, 240, 226);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.Contacts{ 
   background-color: rgb(246, 240, 226);
   padding: 10px;
   border-radius: 10px;
