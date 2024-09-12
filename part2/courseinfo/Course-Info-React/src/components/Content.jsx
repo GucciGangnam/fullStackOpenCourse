@@ -5,15 +5,15 @@ import { Part } from "./part"
 
 // COMPONENT
 
-export const Content = ({ course }) => {
+export const Content = ({ courses }) => {
 
 
-    const total = course.parts.reduce((sum, part) => sum + part.exercises, 0);
+    const total = courses.parts.reduce((sum, part) => sum + part.exercises, 0);
 
     return (
         <div className="Content">
 
-            {course.parts.map((part) => (
+            {courses.parts.map((part) => (
                 <Part key={part.id} part={part} />
             ))}
 

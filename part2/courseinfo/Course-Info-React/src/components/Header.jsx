@@ -1,12 +1,7 @@
-// IMPORTS 
-
-
-// COMPONENT
-
-export const Header = ({course}) => { 
-    return( 
+export const Header = () => { 
+    return(
         <div className="Header">
-            <h1>{course.name}</h1>
+            <h1>Web development curriculum</h1>
         </div>
     )
 }
