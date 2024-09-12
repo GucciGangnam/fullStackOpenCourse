@@ -18,10 +18,18 @@ const App = () => {
   // SUbmit new name 
   const submitName = (e) => {
     e.preventDefault();
-    const updatedPersons = [...persons, { name: newName }]
-    setPersons(updatedPersons)
-    setNewName('')
-  }
+    
+    const nameExists = persons.some(person => person.name === newName);
+    
+    if (nameExists) {
+      alert(`${newName} is already added to phonebook`);
+      return;
+    }
+  
+    const updatedPersons = [...persons, { name: newName }];
+    setPersons(updatedPersons);
+    setNewName('');
+  };
 
   return (
     <div className='App'>
