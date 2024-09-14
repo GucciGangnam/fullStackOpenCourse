@@ -3,20 +3,26 @@
 // Styles 
 import "./App.css"
 // React
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 // Componenets 
 import { Form } from "./componenets/Form"
 import { Search } from "./componenets/Search"
 import { Contacts } from "./componenets/Contacts"
+import axios from "axios"
 
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    {
-      name: 'Arto Hellas',
-      number: '123456789'
-    }
-  ])
+  const [persons, setPersons] = useState([])
+  // UE to fetch persons from server on mount: 
+  useEffect(() => {
+    axios.get('http://localhost:3001/persons')
+      .then(response => {
+        console.log(response)
+        setPersons(response.data)
+      })
+  }, [])
+
+
   // SEARCH 
   const [searchResult, setSearchResult] = useState([])
   const [searchInput, setSearchInput] = useState('');
@@ -68,10 +74,10 @@ const App = () => {
       <h2>Phonebook</h2>
       <Form submitName={submitName} newName={newName} handleChangename={handleChangename} handleChangeNumber={handleChangeNumber} newNumber={newNumber} />
 
-      <Search searchInput={searchInput} handleChangeSearchInput={handleChangeSearchInput} searchResult={searchResult}   />
+      <Search searchInput={searchInput} handleChangeSearchInput={handleChangeSearchInput} searchResult={searchResult} />
 
 
-      <Contacts persons={persons}/>
+      <Contacts persons={persons} />
 
     </div>
   )
