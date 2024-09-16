@@ -1,34 +1,3 @@
 {
-  "persons": [
-    {
-      "id": "76c4",
-      "name": "Bob",
-      "number": "222"
-    },
-    {
-      "id": "238d",
-      "name": "Cal",
-      "number": "333"
-    },
-    {
-      "id": "6d5a",
-      "name": "Dan",
-      "number": "444"
-    },
-    {
-      "id": "882a",
-      "name": "Alex",
-      "number": "56578"
-    },
-    {
-      "id": "5aa0",
-      "name": "AUn",
-      "number": "99191991"
-    },
-    {
-      "id": "0c10",
-      "name": "cdccc",
-      "number": "453453453"
-    }
-  ]
+  "persons": []
 }

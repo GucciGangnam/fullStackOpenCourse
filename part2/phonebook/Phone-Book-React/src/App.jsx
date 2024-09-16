@@ -131,9 +131,21 @@ const App = () => {
           // Filter out the deleted person from the list
           const updatedPersons = persons.filter(person => person.id !== id);
           setPersons(updatedPersons); // Assuming you're using React's state hook
+          setIsFeedback(true)
+          setFeedbackMsg("Contact deleted sucesfully")
+          setTimeout(() => {
+            setFeedbackMsg("")
+            setIsFeedback(false)
+          }, 2000)
         })
         .catch(error => {
           console.error('Error deleting contact:', error);
+          setIsError(true)
+          setErrMsg("This user has already been deleted")
+          setTimeout(() => {
+            setIsError(false)
+            setErrMsg("")
+          }, 2000)
         });
     }
   }
