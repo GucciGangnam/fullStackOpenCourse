@@ -14,6 +14,12 @@ import { Results } from './componenets/Results'
 
 function App() {
 
+  // Search Input 
+  const [searchInput, setSearchInput] = useState("");
+  const selectCountry = (name) => { 
+    setSearchInput(name)
+  }
+
   // States 
   const [countries, setCountries] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -32,8 +38,8 @@ function App() {
 
   return (
     <div className='App'>
-      <Search countries={countries} setSearchResults={setSearchResults} />
-      <Results countries={countries} searchResults={searchResults} />
+      <Search countries={countries} setSearchResults={setSearchResults} searchInput={searchInput} setSearchInput={setSearchInput} />
+      <Results countries={countries} searchResults={searchResults} selectCountry={selectCountry} />
     </div>
   )
 }

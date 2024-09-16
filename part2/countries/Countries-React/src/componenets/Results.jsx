@@ -3,7 +3,7 @@
 
 
 // COMPONENET 
-export const Results = ({ searchResults }) => {
+export const Results = ({ searchResults, selectCountry }) => {
     return (
         <div className="Results">
 
@@ -34,7 +34,6 @@ export const Results = ({ searchResults }) => {
                             ))}
                         </ul>
                     </div>
-
                 </div>
             ) : (searchResults.length > 249) ? (
                 <p>Results will be displayed here</p>
@@ -42,6 +41,8 @@ export const Results = ({ searchResults }) => {
                 searchResults.map((country) => (
                     <div key={country.name.common} className="Country">
                         {country.name.common}
+                        <button
+                        onClick={() => {selectCountry(country.name.common)}}>Show</button>
                     </div>
                 ))
             ) : (

@@ -5,10 +5,10 @@ import { useState, useEffect } from "react";
 
 
 // COMPONENET 
-export const Search = ({ countries, setSearchResults }) => {
+export const Search = ({ countries, setSearchResults, searchInput, setSearchInput }) => {
 
     // Search input 
-    const [searchInput, setSearchInput] = useState("");
+
     // Handle change search input
     const handleChangeSearchInput = (e) => {
         setSearchInput(e.target.value)
