@@ -61,10 +61,36 @@ const App = () => {
   const submitName = (e) => {
     e.preventDefault();
     const nameExists = persons.some(person => person.name === newName);
+
+    // Ask to update number
     if (nameExists) {
-      alert(`${newName} is already added to phonebook`);
+      let existingContact = persons.find(person => person.name === newName);
+      console.log(existingContact);
+      let updatedContact = { ...existingContact, number: newNumber };
+
+      if (window.confirm("This contact already exists. Do you want to update the number?")) {
+        console.log("number updated");
+
+        personServices.update(existingContact.id, updatedContact)
+          .then(() => {
+            console.log("updating front......");
+            // Update the persons array, replacing the updated contact
+            let updatedPersons = persons.map(person =>
+              person.id === existingContact.id ? updatedContact : person
+            );
+            setPersons(updatedPersons); // Assuming you're using React state
+          })
+          .catch(error => {
+            console.error('Error updating contact:', error);
+          });
+      }
       return;
     }
+
+
+
+
+
     const updatedPersons = [...persons, { name: newName, number: newNumber }];
     setPersons(updatedPersons);
 
