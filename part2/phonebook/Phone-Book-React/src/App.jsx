@@ -15,9 +15,14 @@ import personServices from './services/persons'
 
 
 const App = () => {
+
+  // STATES 
+  const [isFeedback, setIsFeedback] = useState(false);
+  const [feedbackMsg, setFeedbackMsg] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [errorMsg, setErrMsg] = useState('');
   const [persons, setPersons] = useState([])
   // UE to fetch persons from server on mount:
-
   useEffect(() => {
     personServices
       .getAll()
@@ -70,7 +75,6 @@ const App = () => {
 
       if (window.confirm("This contact already exists. Do you want to update the number?")) {
         console.log("number updated");
-
         personServices.update(existingContact.id, updatedContact)
           .then(() => {
             console.log("updating front......");
@@ -79,17 +83,25 @@ const App = () => {
               person.id === existingContact.id ? updatedContact : person
             );
             setPersons(updatedPersons); // Assuming you're using React state
+            setIsFeedback(true)
+            setFeedbackMsg("Contact updated sucesfully")
+            setTimeout(() => {
+              setFeedbackMsg("")
+              setIsFeedback(false)
+            }, 2000)
           })
           .catch(error => {
             console.error('Error updating contact:', error);
+            setIsError(true)
+            setErrMsg("Error updating contact:")
+            setTimeout(() => {
+              setIsError(false)
+              setErrMsg("")
+            }, 2000)
           });
       }
       return;
     }
-
-
-
-
 
     const updatedPersons = [...persons, { name: newName, number: newNumber }];
     setPersons(updatedPersons);
@@ -97,9 +109,14 @@ const App = () => {
     // Update person in backend 
     personServices
       .create({ name: newName, number: newNumber })
-
     setNewName('');
     setNewNumber('')
+    setIsFeedback(true)
+    setFeedbackMsg("Contact updated sucesfully")
+    setTimeout(() => {
+      setFeedbackMsg("")
+      setIsFeedback(false)
+    }, 2000)
 
 
   };
@@ -126,6 +143,21 @@ const App = () => {
   // RETURN //
   return (
     <div className='App'>
+
+      {isFeedback && (
+        <div className="Feedback">
+          {feedbackMsg}
+        </div>
+      )}
+
+      {isError && (
+        <div className="Error">
+          {errorMsg}
+        </div>
+      )}
+
+
+
 
       <h2>Phonebook</h2>
       <Form submitName={submitName} newName={newName} handleChangename={handleChangename} handleChangeNumber={handleChangeNumber} newNumber={newNumber} />
