@@ -9,13 +9,18 @@ import { Form } from "./componenets/Form"
 import { Search } from "./componenets/Search"
 import { Contacts } from "./componenets/Contacts"
 import axios from "axios"
+// Services 
+import personServices from './services/persons'
+
 
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  // UE to fetch persons from server on mount: 
+  // UE to fetch persons from server on mount:
+
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
+    personServices
+      .getAll()
       .then(response => {
         console.log(response)
         setPersons(response.data)
@@ -41,7 +46,7 @@ const App = () => {
     setSearchResult(updatedSearchResults);
   };
 
-
+// ADD NEW PERSON
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   // Handle change name 
@@ -52,8 +57,7 @@ const App = () => {
   const handleChangeNumber = (e) => {
     setNewNumber(e.target.value)
   }
-
-  // SUbmit new name 
+  // Submit new name 
   const submitName = (e) => {
     e.preventDefault();
     const nameExists = persons.some(person => person.name === newName);
@@ -61,13 +65,22 @@ const App = () => {
       alert(`${newName} is already added to phonebook`);
       return;
     }
-
     const updatedPersons = [...persons, { name: newName, number: newNumber }];
     setPersons(updatedPersons);
+
+    // Update person in backend 
+    personServices
+    .create({ name: newName, number: newNumber })
+
     setNewName('');
     setNewNumber('')
+
+
   };
 
+
+
+  // RETURN //
   return (
     <div className='App'>
 
