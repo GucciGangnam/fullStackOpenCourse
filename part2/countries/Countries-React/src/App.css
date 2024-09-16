@@ -1,0 +1,65 @@
+.App {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 300px 1fr;
+}
+
+.Search {
+  /* border: 1px solid red; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+
+  input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+  }
+}
+
+.Results {
+  border: 1px solid green;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 10px;
+  align-items: center;
+}
+
+.Results .Country {
+  background-color: rgb(111, 45, 14);
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+}
+
+.Results .Single-Country {
+  border-radius: 10px;
+  background-color: rgb(111, 45, 14);
+  padding: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  .Header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .Name {
+    color: rgba(255, 255, 255, 1);
+    font-weight: bold;
+    font-size: 30px;
+  }
+
+  .Flag {
+    font-size: 30px;
+  }
+}
