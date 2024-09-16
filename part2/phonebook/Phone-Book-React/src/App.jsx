@@ -46,7 +46,7 @@ const App = () => {
     setSearchResult(updatedSearchResults);
   };
 
-// ADD NEW PERSON
+  // ADD NEW PERSON
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   // Handle change name 
@@ -70,13 +70,30 @@ const App = () => {
 
     // Update person in backend 
     personServices
-    .create({ name: newName, number: newNumber })
+      .create({ name: newName, number: newNumber })
 
     setNewName('');
     setNewNumber('')
 
 
   };
+
+  // DELETE CONTACT 
+  const deleteContact = (id) => {
+    console.log(id);
+    // Call the service to delete the person from the database
+    if (window.confirm("Are you sure you want to delete this contact?")) {
+      personServices.remove(id)
+        .then(() => {
+          // Filter out the deleted person from the list
+          const updatedPersons = persons.filter(person => person.id !== id);
+          setPersons(updatedPersons); // Assuming you're using React's state hook
+        })
+        .catch(error => {
+          console.error('Error deleting contact:', error);
+        });
+    }
+  }
 
 
 
@@ -90,7 +107,7 @@ const App = () => {
       <Search searchInput={searchInput} handleChangeSearchInput={handleChangeSearchInput} searchResult={searchResult} />
 
 
-      <Contacts persons={persons} />
+      <Contacts persons={persons} deleteContact={deleteContact} />
 
     </div>
   )
