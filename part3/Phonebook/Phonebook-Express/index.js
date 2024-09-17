@@ -50,6 +50,11 @@ app.post('/api/persons', (req, res) => {
     if (!req.body.number) {
         return res.status(403).json("Must include a number")
     }
+    // Check if name already exists
+    let existingName = persons.find(person => person.name === req.body.name);
+    if (existingName) {
+        return res.status(403).json("This name aready exists in the phonebook")
+    }
 
     let newPerson = {
         id: uuidv4(),
