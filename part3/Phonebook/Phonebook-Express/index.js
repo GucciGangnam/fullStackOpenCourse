@@ -21,6 +21,11 @@ persons = [
         "id": "4",
         "name": "Mary Poppendieck",
         "number": "39-23-6423122"
+    },
+    {
+        "id": "5",
+        "name": "Tester",
+        "number": "555-555-555"
     }
 ]
 
@@ -62,6 +67,20 @@ app.get('/api/persons/:id', (req, res) => {
 // UPDATE 
 
 //DELETE
+// Delete One user 
+app.delete('/api/persons/:id', (req, res) => {
+    let personToFind = persons.find(persons => persons.id === req.params.id)
+    if (!personToFind) {
+        return res.status(404).json("Can not find that user")
+    } else {
+        persons.pop();
+        res.send(
+            `<p>
+                ${personToFind.name} has been removed from the phonebook.
+            </p>`
+        )
+    }
+})
 
 
 
