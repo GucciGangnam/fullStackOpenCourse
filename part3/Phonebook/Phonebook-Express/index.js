@@ -34,6 +34,17 @@ app.get('/', (req, res) => {
 
 
 // READ 
+// Get all Info 
+app.get('/info', (req, res) => { 
+    let numberOfPeople = persons.length;
+    let date = new Date();
+    res.send(`
+        <p>This phonebook has info for ${numberOfPeople} people
+            <br/>
+            The date is: ${date}
+        </p>
+    `);
+});
 // Get all persons 
 app.get('/api/persons', (req, res) => { 
     res.json(persons)
