@@ -1,5 +1,11 @@
 const express = require('express')
 const app = express()
+const { v4: uuidv4 } = require('uuid');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
 
 persons = [
     {
@@ -36,6 +42,26 @@ app.get('/', (req, res) => {
 })
 
 // CREATE 
+// Creat enew person 
+app.post('/api/persons', (req, res) => {
+    if (!req.body.name) {
+        return res.status(403).json("Must include a name")
+    }
+    if (!req.body.number) {
+        return res.status(403).json("Must include a number")
+    }
+
+    let newPerson = {
+        id: uuidv4(),
+        name: req.body.name,
+        number: req.body.number
+    }
+    persons.push(newPerson)
+    res.send(
+        `<p>${newPerson.name} has been added to the phonebook.
+        </p>`
+    )
+});
 
 
 // READ 
