@@ -26,7 +26,7 @@ persons = [
 
 // HOMEPAGE
 // Get homepage
-app.get('/', (req, res) => { 
+app.get('/', (req, res) => {
     res.send("Welcome to the Homepage")
 })
 
@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 
 // READ 
 // Get all Info 
-app.get('/info', (req, res) => { 
+app.get('/info', (req, res) => {
     let numberOfPeople = persons.length;
     let date = new Date();
     res.send(`
@@ -46,8 +46,17 @@ app.get('/info', (req, res) => {
     `);
 });
 // Get all persons 
-app.get('/api/persons', (req, res) => { 
+app.get('/api/persons', (req, res) => {
     res.json(persons)
+})
+// Get single person 
+app.get('/api/persons/:id', (req, res) => {
+    let personToFind = persons.find(persons => persons.id === req.params.id)
+    if (!personToFind) {
+        return res.status(404).json("Can not find that user")
+    } else {
+        res.json(personToFind)
+    }
 })
 
 // UPDATE 
