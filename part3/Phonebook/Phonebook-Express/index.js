@@ -5,7 +5,16 @@ const morgan = require('morgan')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('tiny'));
+
+morgan.token('body', (req) => {
+    return JSON.stringify(req.body);
+});
+
+app.use(
+    morgan(':method :url :status - Body: :body', {
+        skip: (req) => req.method !== 'POST', 
+    })
+);
 
 
 
