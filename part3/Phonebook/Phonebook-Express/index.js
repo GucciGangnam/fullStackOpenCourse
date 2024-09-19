@@ -3,53 +3,34 @@ const app = express()
 const { v4: uuidv4 } = require('uuid');
 const morgan = require('morgan')
 const cors = require('cors')
+require('dotenv').config();
+const mongoose = require('mongoose')
+
+// Models 
+const Person = require('./models/person')
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('dist'))
 
-morgan.token('body', (req) => {
-    return JSON.stringify(req.body);
-});
+// morgan.token('body', (req) => {
+//     return JSON.stringify(req.body);
+// });
+// app.use(
+//     morgan(':method :url :status - Body: :body', {
+//         skip: (req) => req.method !== 'POST',
+//     })
+// );
+app.use(morgan('tiny'))
 
-app.use(
-    morgan(':method :url :status - Body: :body', {
-        skip: (req) => req.method !== 'POST',
-    })
-);
+// Connectt to mongo
+mongoose.set('strictQuery', false);
+const url = process.env.MONGO_URI;
+mongoose.connect(url)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch((error) => console.error('Error connecting to MongoDB:', error));
 
-
-
-
-
-persons = [
-    {
-        "id": "1",
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": "2",
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523"
-    },
-    {
-        "id": "3",
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": "4",
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-    },
-    {
-        "id": "5",
-        "name": "Tester",
-        "number": "555-555-555"
-    }
-]
 
 // HOMEPAGE
 // Get homepage
@@ -58,56 +39,69 @@ app.get('/', (req, res) => {
 })
 
 // CREATE 
-// Creat enew person 
-app.post('/api/persons', (req, res) => {
+// Create new person 
+app.post('/api/persons', async (req, res) => {
     if (!req.body.name) {
         return res.status(403).json("Must include a name")
     }
     if (!req.body.number) {
         return res.status(403).json("Must include a number")
     }
-    // Check if name already exists
-    let existingName = persons.find(person => person.name === req.body.name);
-    if (existingName) {
-        return res.status(403).json("This name aready exists in the phonebook")
+    try {
+        let existingPerson = await Person.findOne({ name: req.body.name })
+        if (existingPerson) {
+            console.log(existingPerson)
+            return res.status(403).json("This name aready exists in the phonebook")
+        }
+        const newPerson = new Person({
+            id: uuidv4(),
+            name: req.body.name,
+            number: req.body.number
+        })
+        await newPerson.save();
+        console.log('Added', newPerson.name, newPerson.number, 'to phonebook');
+    } catch (error) {
+        console.error("Unable to save new person")
     }
-
-    let newPerson = {
-        id: uuidv4(),
-        name: req.body.name,
-        number: req.body.number
-    }
-    persons.push(newPerson)
-    res.send(
-        `<p>${newPerson.name} has been added to the phonebook.
-        </p>`
-    )
-});
+})
 
 
 // READ 
-// Get all Info 
-app.get('/info', (req, res) => {
-    let numberOfPeople = persons.length;
-    let date = new Date();
-    res.send(`
-        <p>This phonebook has info for ${numberOfPeople} people
-            <br/>
-            The date is: ${date}
-        </p>
-    `);
-});
+// Get DB info
+app.get('/info', async (req, res) => {
+    try {
+        let numberOfPeople = (await Person.find({})).length
+        let date = new Date();
+        res.send(`
+            <p>This phonebook has info for ${numberOfPeople} people
+                <br/>
+                The date is: ${date}
+            </p>
+        `);
+    } catch (error) {
+        console.error("Cant get number of peoepl in phonebook from DB")
+    }
+})
 // Get all persons 
-app.get('/api/persons', (req, res) => {
-    res.json(persons)
+app.get('/api/persons', async (req, res) => {
+    try {
+        let persons = await Person.find({});
+        res.json(persons)
+    } catch (error) {
+        console.error("Can not fetch perosns from DB")
+    }
 })
 // Get single person 
-app.get('/api/persons/:id', (req, res) => {
-    let personToFind = persons.find(persons => persons.id === req.params.id)
-    if (!personToFind) {
-        return res.status(404).json("Can not find that user")
-    } else {
-        res.json(personToFind)
+app.get('/api/persons/:id', async (req, res) => {
+    try {
+        let personToFind = await Person.find({ id: req.params.id })
+        if (personToFind.length < 1) {
+            return res.status(404).json("Can not find that user")
+        } else {
+            res.json(personToFind)
+        }
+    } catch (error) {
+        console.error("Database error")
     }
 })
 
@@ -115,19 +109,24 @@ app.get('/api/persons/:id', (req, res) => {
 
 //DELETE
 // Delete One user 
-app.delete('/api/persons/:id', (req, res) => {
-    let personToFind = persons.find(persons => persons.id === req.params.id)
-    if (!personToFind) {
-        return res.status(404).json("Can not find that user")
-    } else {
-        persons.pop();
-        res.send(
-            `<p>
-                ${personToFind.name} has been removed from the phonebook.
-            </p>`
-        )
+app.delete('/api/persons/:id', async (req, res) => {
+    try {
+        // Find the person by id
+        let personToDelete = await Person.findOne({ id: req.params.id });
+
+        // If the person is not found
+        if (!personToDelete) {
+            return res.status(404).json({ error: "Person not found" });
+        }
+
+        // Use deleteOne() to remove the person
+        await Person.deleteOne({ id: req.params.id });
+        res.status(200).json({ message: "Person deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting person:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-})
+});
 
 
 
