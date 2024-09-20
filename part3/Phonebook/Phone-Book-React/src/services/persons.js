@@ -10,6 +10,8 @@ const create = (newObject) => {
 }
 
 const update = (id, newObject) => {
+    console.log(id)
+    console.log(newObject)
     return axios.put(`${baseUrl}/${id}`, newObject)
 }
 

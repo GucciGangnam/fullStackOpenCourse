@@ -40,18 +40,26 @@ app.get('/', (req, res) => {
 
 // CREATE 
 // Create new person 
-app.post('/api/persons', async (req, res) => {
-    if (!req.body.name) {
-        return res.status(403).json("Must include a name")
-    }
-    if (!req.body.number) {
-        return res.status(403).json("Must include a number")
-    }
+app.post('/api/persons', async (req, res, next) => {
     try {
+        if (!req.body.name) {
+            const error = new Error("New contact must include a name");
+            error.status = 403;
+            error.message = "New contact must include a name";
+            throw error;
+        }
+        if (!req.body.number) {
+            const error = new Error("New contact must include a number");
+            error.status = 403;
+            error.message = "New contact must include a number";
+            throw error;
+        }
         let existingPerson = await Person.findOne({ name: req.body.name })
         if (existingPerson) {
-            console.log(existingPerson)
-            return res.status(403).json("This name aready exists in the phonebook")
+            const error = new Error("This person already exists in the phone book");
+            error.status = 403;
+            error.message = "This person already exists in the phone book";
+            throw error;
         }
         const newPerson = new Person({
             id: uuidv4(),
@@ -60,15 +68,16 @@ app.post('/api/persons', async (req, res) => {
         })
         await newPerson.save();
         console.log('Added', newPerson.name, newPerson.number, 'to phonebook');
+        res.status(201).json(newPerson);
     } catch (error) {
-        console.error("Unable to save new person")
+        next(error)
     }
 })
 
 
 // READ 
 // Get DB info
-app.get('/info', async (req, res) => {
+app.get('/info', async (req, res, error) => {
     try {
         let numberOfPeople = (await Person.find({})).length
         let date = new Date();
@@ -79,7 +88,9 @@ app.get('/info', async (req, res) => {
             </p>
         `);
     } catch (error) {
-        console.error("Cant get number of peoepl in phonebook from DB")
+        error.status = 500;
+        error.message = "Error communicatiign with DB"
+        next(error)
     }
 })
 // Get all persons 
@@ -88,38 +99,57 @@ app.get('/api/persons', async (req, res) => {
         let persons = await Person.find({});
         res.json(persons)
     } catch (error) {
-        console.error("Can not fetch perosns from DB")
+        error.status = 500;
+        error.message = "Error communicatiign with DB"
+        next(error)
     }
 })
 // Get single person 
-app.get('/api/persons/:id', async (req, res) => {
+app.get('/api/persons/:id', async (req, res, next) => {
     try {
         let personToFind = await Person.find({ id: req.params.id })
         if (personToFind.length < 1) {
-            return res.status(404).json("Can not find that user")
+            const error = new Error("Cannot find that person");
+            error.status = 404
+            error.message = "Can not find that user";
+            throw error;
         } else {
             res.json(personToFind)
         }
     } catch (error) {
-        console.error("Database error")
+        next(error)
     }
 })
 
 // UPDATE 
+app.put('/api/persons/:id', async (req, res, next) => {
+    const personID = req.body.id;
+    const newNumber = req.body.number;
+    try {
+        const existingUser = await Person.findOne({ id: personID });
+        if (!existingUser) {
+            const error = new Error("Person ID not recognised");
+            error.status = 404;
+            error.message = "Person ID not recognised";
+            error.details = "The ID that was passed in the body cannot be located in the database";
+            throw error;
+        }
+        existingUser.number = newNumber;
+        const updatedPerson = await existingUser.save();
+        res.status(200).json(updatedPerson);
+    } catch (error) {
+        next(error);
+    }
+});
 
 //DELETE
 // Delete One user 
 app.delete('/api/persons/:id', async (req, res) => {
     try {
-        // Find the person by id
         let personToDelete = await Person.findOne({ id: req.params.id });
-
-        // If the person is not found
         if (!personToDelete) {
             return res.status(404).json({ error: "Person not found" });
         }
-
-        // Use deleteOne() to remove the person
         await Person.deleteOne({ id: req.params.id });
         res.status(200).json({ message: "Person deleted successfully" });
     } catch (error) {
@@ -128,9 +158,32 @@ app.delete('/api/persons/:id', async (req, res) => {
     }
 });
 
+app.get("/*", (req, res) => {
+    res.send("This end point doesnt exist")
+})
+
 
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
+
+
+const errorHandler = async (error, req, res, next) => {
+    console.error(error)
+    const status = error.rstatus || 500;
+    const message = error.message || "An error has occured"
+    const details = error.details || "No details have been specified for this error"
+
+    res.send(
+        `<h1>Congratualtions, theres been an error!</h1>
+    <br/>
+    <p>Status: ${status} </p>
+    <p>Message: ${message} </p>
+    <p>Details: ${details} </p>
+</p>`
+    )
+}
+
+app.use(errorHandler)
