@@ -63,7 +63,7 @@ const App = () => {
     setNewNumber(e.target.value)
   }
   // Submit new name 
-  const submitName = (e) => {
+  const submitName = async (e) => {
     e.preventDefault();
     const nameExists = persons.some(person => person.name === newName);
 
@@ -103,21 +103,32 @@ const App = () => {
       return;
     }
 
-    const updatedPersons = [...persons, { name: newName, number: newNumber }];
-    setPersons(updatedPersons);
 
-    // Update person in backend 
-    personServices
-      .create({ name: newName, number: newNumber })
-    setNewName('');
-    setNewNumber('')
-    setIsFeedback(true)
-    setFeedbackMsg("Contact updated sucesfully")
-    setTimeout(() => {
-      setFeedbackMsg("")
-      setIsFeedback(false)
-    }, 2000)
 
+    try {
+      const createdPerson = await personServices.create({ name: newName, number: newNumber });
+      setNewName('');
+      setNewNumber('');
+      setIsFeedback(true);
+      setFeedbackMsg("Contact updated successfully");
+      const updatedPersons = [...persons, createdPerson];
+      setPersons(updatedPersons);
+      setTimeout(() => {
+        setFeedbackMsg('');
+        setIsFeedback(false);
+      }, 2000);
+    } catch (error) {
+      console.log(error)
+      setErrMsg("Name must be at least 3 chars long");
+      setIsError(true);
+      
+      setTimeout(() => {
+        setErrMsg('');
+        setIsError(false);
+      }, 2000);
+  
+      console.error("Error adding person:", error);
+    }
 
   };
 

@@ -66,9 +66,14 @@ app.post('/api/persons', async (req, res, next) => {
             name: req.body.name,
             number: req.body.number
         })
+
+
         await newPerson.save();
         console.log('Added', newPerson.name, newPerson.number, 'to phonebook');
         res.status(201).json(newPerson);
+
+
+
     } catch (error) {
         next(error)
     }
@@ -146,7 +151,7 @@ app.put('/api/persons/:id', async (req, res, next) => {
 // Delete One user 
 app.delete('/api/persons/:id', async (req, res) => {
     try {
-        let personToDelete = await Person.findOne({ id: req.params.id });
+        let personToDelete = await Person.findOne({ _id: req.params.id });
         if (!personToDelete) {
             return res.status(404).json({ error: "Person not found" });
         }
@@ -171,19 +176,28 @@ app.listen(PORT, () => {
 
 
 const errorHandler = async (error, req, res, next) => {
-    console.error(error)
-    const status = error.rstatus || 500;
-    const message = error.message || "An error has occured"
-    const details = error.details || "No details have been specified for this error"
 
-    res.send(
-        `<h1>Congratualtions, theres been an error!</h1>
-    <br/>
-    <p>Status: ${status} </p>
-    <p>Message: ${message} </p>
-    <p>Details: ${details} </p>
-</p>`
-    )
+    if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: error.message })
+    } else {
+        console.log("error haqndler called")
+        console.error(error)
+        const status = error.rstatus || 500;
+        const message = error.message || "An error has occured"
+        const details = error.details || "No details have been specified for this error"
+
+        return res.send(
+            `<h1>Congratualtions, theres been an error!</h1>
+        <br/>
+        <p>Status: ${status} </p>
+        <p>Message: ${message} </p>
+        <p>Details: ${details} </p>
+    </p>`
+        )
+    }
+
+
+
 }
 
 app.use(errorHandler)
