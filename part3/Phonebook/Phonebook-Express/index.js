@@ -54,6 +54,17 @@ app.post('/api/persons', async (req, res, next) => {
             error.message = "New contact must include a number";
             throw error;
         }
+        // Custom validator for phone number format and length
+        const phoneNumber = req.body.number;
+        const phoneRegex = /^(?:\d{2,3})-\d{5,}$/;
+
+        if (!phoneRegex.test(phoneNumber)) {
+            const error = new Error("Invalid phone number format. It should be in the format XX-XXXXXXX or XXX-XXXXXXXX.");
+            error.status = 403;
+            error.name = "ValidationError"
+            error.message = "Phone number must have two or three digits followed by a hyphen, and then a sequence of numbers.";
+            throw error;
+        }
         let existingPerson = await Person.findOne({ name: req.body.name })
         if (existingPerson) {
             const error = new Error("This person already exists in the phone book");

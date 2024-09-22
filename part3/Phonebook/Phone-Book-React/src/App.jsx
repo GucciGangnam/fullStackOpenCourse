@@ -118,8 +118,7 @@ const App = () => {
         setIsFeedback(false);
       }, 2000);
     } catch (error) {
-      console.log(error)
-      setErrMsg("Name must be at least 3 chars long");
+      setErrMsg(error.response.data.error);
       setIsError(true);
       
       setTimeout(() => {
