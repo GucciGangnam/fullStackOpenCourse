@@ -60,12 +60,20 @@ test('ID property of blog is returned as id, not _id', async () => {
 });
 
 // POSTING 
-test.only('making an HTTP POST request to the /api/blogs URL successfully creates a new blog post', async () => { 
-    const testBlog = new Blog({title: "Test Author", author: "Test Author", url: "Test URL", likes: 0})
+test('making an HTTP POST request to the /api/blogs URL successfully creates a new blog post', async () => {
+    const testBlog = new Blog({ title: "Test Author", author: "Test Author", url: "Test URL", likes: 0 })
     const saveRes = await testBlog.save();
-    const blogInDB = await Blog.find({_id : saveRes._id});
+    const blogInDB = await Blog.find({ _id: saveRes._id });
     assert.strictEqual(blogInDB.length, 1)
 })
+
+test.only('Adding a new blog with no like sproperty will default its vlikes value to 0', async () => {
+    const testBlog = new Blog({ title: "TestLikes Title", author: "TestLikes Author", url: "TestLikes URL"})
+    const saveRes = await testBlog.save();
+    const blogInDB = await Blog.find({ _id: saveRes._id });
+    assert.strictEqual(blogInDB[0].likes, 0)
+})
+
 
 
 after(async () => {
