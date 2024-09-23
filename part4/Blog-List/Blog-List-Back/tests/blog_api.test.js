@@ -29,6 +29,7 @@ beforeEach(async () => {
     blogObject = new Blog(initialBlog[1]);
     await blogObject.save();
 })
+// GETTING
 // Blogs are resturned in JSOn format
 test('blogs are returned as json', async () => {
     await api
@@ -57,6 +58,14 @@ test('ID property of blog is returned as id, not _id', async () => {
         assert.strictEqual(blog._id, undefined, 'Blog should not have an _id property');
     });
 });
+
+// POSTING 
+test.only('making an HTTP POST request to the /api/blogs URL successfully creates a new blog post', async () => { 
+    const testBlog = new Blog({title: "Test Author", author: "Test Author", url: "Test URL", likes: 0})
+    const saveRes = await testBlog.save();
+    const blogInDB = await Blog.find({_id : saveRes._id});
+    assert.strictEqual(blogInDB.length, 1)
+})
 
 
 after(async () => {
