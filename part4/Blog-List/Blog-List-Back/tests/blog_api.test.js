@@ -67,12 +67,40 @@ test('making an HTTP POST request to the /api/blogs URL successfully creates a n
     assert.strictEqual(blogInDB.length, 1)
 })
 
-test.only('Adding a new blog with no like sproperty will default its vlikes value to 0', async () => {
-    const testBlog = new Blog({ title: "TestLikes Title", author: "TestLikes Author", url: "TestLikes URL"})
+test('Adding a new blog with no like sproperty will default its vlikes value to 0', async () => {
+    const testBlog = new Blog({ title: "TestLikes Title", author: "TestLikes Author", url: "TestLikes URL" })
     const saveRes = await testBlog.save();
     const blogInDB = await Blog.find({ _id: saveRes._id });
     assert.strictEqual(blogInDB[0].likes, 0)
 })
+
+test('missing title or url results in 400 bad request', async () => {
+    // Case 1: Missing title
+    const blogWithoutTitle = {
+        author: "Test Author",
+        url: "Test URL",
+        likes: 0
+    };
+
+    await supertest(app)
+        .post('/api/blogs')
+        .send(blogWithoutTitle)
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+
+    // Case 2: Missing url
+    const blogWithoutUrl = {
+        title: "Test Title",
+        author: "Test Author"
+    };
+
+    await supertest(app)
+        .post('/api/blogs')
+        .send(blogWithoutUrl)
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+});
+
 
 
 
