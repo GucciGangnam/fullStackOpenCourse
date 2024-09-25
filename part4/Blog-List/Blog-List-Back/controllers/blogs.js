@@ -1,6 +1,17 @@
 const blogRouter = require('express').Router()
+// JWT
+const jwt = require('jsonwebtoken')
 // Models 
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
+const getTokenFrom = request => {
+    const authorization = request.get('authorization')
+    if (authorization && authorization.startsWith('Bearer ')) {
+        return authorization.replace('Bearer ', '')
+    }
+    return null
+}
 
 // GET //
 // Get All Blogs //
@@ -13,7 +24,20 @@ blogRouter.get('/', async (req, res) => {
 // POST //
 // Post a new blog
 blogRouter.post('/', async (req, res, next) => {
+
+
+
+
     try {
+
+        const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+        if (!decodedToken.id) {
+            return response.status(401).json({ error: 'token invalid' })
+        }
+        const user = await User.findById(decodedToken.id)
+
+
+
         console.log(req.body.title)
         if (!req.body.title) {
             const error = new Error("Title can't be null");
@@ -25,9 +49,16 @@ blogRouter.post('/', async (req, res, next) => {
             error.status = 400;
             throw error;
         }
-        const blog = new Blog(req.body)
+        const blog = new Blog({
+            title: req.body.title,
+            author: user.username,
+            url: req.body.url,
+            user: user._id
+        })
         console.log(blog)
-        await blog.save();
+        const savedBlog = await blog.save();
+        user.blogs = user.blogs.concat(savedBlog._id)
+        await user.save();
         res.status(201).json(blog)
     } catch (error) {
         console.error(error)
@@ -42,7 +73,7 @@ blogRouter.patch('/:id', async (req, res) => {
     try {
         console.log(req.params.id)
         const updates = req.body;
-    const blogToUpdate = await Blog.findById(req.params.id);
+        const blogToUpdate = await Blog.findById(req.params.id);
         if (!blogToUpdate) {
             return res.status(404).send({ error: "Blog not found" });
         }

@@ -7,7 +7,9 @@ const config = require('./utils/config')
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
 // Routers
+const usersRouter = require('./controllers/users')
 const blogRouter = require('./controllers/blogs')
+const loginRouter = require('./controllers/login')
 
 mongoose.set('strictQuery', false)
 
@@ -35,6 +37,8 @@ app.get('/api', (req, res) => {
 
 // Router middleware
 app.use('/api/blogs', blogRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
 
 
