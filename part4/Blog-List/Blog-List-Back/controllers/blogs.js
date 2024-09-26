@@ -17,7 +17,6 @@ blogRouter.get('/', async (request, response) => {
 // Post a new blog
 blogRouter.post('/', async (req, res, next) => {
     try {
-
         const decodedToken = jwt.verify(req.token, process.env.SECRET)
         console.log("positng new blog --- USER ID below")
         console.log(decodedToken.id)
@@ -86,11 +85,21 @@ blogRouter.patch('/:id', async (req, res) => {
 // Delete a single blog post 
 blogRouter.delete("/:id", async (req, res, next) => {
     try {
+
+        const decodedToken = jwt.verify(req.token, process.env.SECRET)
+        const userID = decodedToken.id
         const blogToDelete = await Blog.findOne({ _id: req.params.id })
         if (!blogToDelete) {
             throw new Error("No such blog with this ID")
         }
-        await Blog.findByIdAndDelete(req.params.id)
+
+        if (blogToDelete.user.toString() === userID.toString()) {
+            await Blog.findByIdAndDelete(req.params.id)
+        } else {
+            throw new Error("Your access token doesnt allow deleting access to this blog")
+        }
+
+
         res.status(200).json("Blog deleted");
     } catch (error) {
         next(error)
