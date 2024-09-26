@@ -5,45 +5,30 @@ const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-const getTokenFrom = request => {
-    const authorization = request.get('authorization')
-    if (authorization && authorization.startsWith('Bearer ')) {
-        return authorization.replace('Bearer ', '')
-    }
-    return null
-}
-
 // GET //
 // Get All Blogs //
-// blogRouter.get('/', async (req, res) => {
-//     const blogs = await Blog
-//     .find({})
-//     res.json(blogs)
-// })
-
 blogRouter.get('/', async (request, response) => {
     const blogs = await Blog
-        .find({}).populate('users')
+        .find({}).populate('user')
     response.json(blogs)
 })
-
 
 // POST //
 // Post a new blog
 blogRouter.post('/', async (req, res, next) => {
-
-
-
-
     try {
 
-        const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+        const decodedToken = jwt.verify(req.token, process.env.SECRET)
+        console.log("positng new blog --- USER ID below")
+        console.log(decodedToken.id)
         if (!decodedToken.id) {
             return response.status(401).json({ error: 'token invalid' })
         }
         const user = await User.findById(decodedToken.id)
 
-
+        console.log("user fetched from DB with ID from above.")
+        console.log("That ID for teh fetched user is BLEOW")
+        console.log(user._id)
 
         console.log(req.body.title)
         if (!req.body.title) {
