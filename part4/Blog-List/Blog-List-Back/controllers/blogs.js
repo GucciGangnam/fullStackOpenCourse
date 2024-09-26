@@ -15,9 +15,16 @@ const getTokenFrom = request => {
 
 // GET //
 // Get All Blogs //
-blogRouter.get('/', async (req, res) => {
-    const blogs = await Blog.find({})
-    res.json(blogs)
+// blogRouter.get('/', async (req, res) => {
+//     const blogs = await Blog
+//     .find({})
+//     res.json(blogs)
+// })
+
+blogRouter.get('/', async (request, response) => {
+    const blogs = await Blog
+        .find({}).populate('users')
+    response.json(blogs)
 })
 
 
