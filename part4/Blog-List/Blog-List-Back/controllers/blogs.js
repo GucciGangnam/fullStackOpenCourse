@@ -90,12 +90,8 @@ blogRouter.patch('/:id', async (req, res) => {
 // Delete a single blog post 
 blogRouter.delete("/:id", async (req, res, next) => {
     try {
-
         const user = req.user
-        // The course didnt tell us what to exactly do 
-
-        const decodedToken = jwt.verify(req.token, process.env.SECRET)
-        const userID = decodedToken.id
+        const userID = user._id
         const blogToDelete = await Blog.findOne({ _id: req.params.id })
         if (!blogToDelete) {
             throw new Error("No such blog with this ID")
