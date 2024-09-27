@@ -1,4 +1,9 @@
+// Logger
 const logger = require('./logger')
+// JWT
+const jwt = require('jsonwebtoken')
+//User model 
+const User = require('../models/user')
 
 const requestLogger = (request, response, next) => {
     logger.info('Method:', request.method)
@@ -33,7 +38,6 @@ const errorHandler = (error, request, response, next) => {
 }
 
 const tokenExtractor = (req, res, next) => {
-    console.log("hello from token extractor")
     const authorization = req.get('authorization')
     if (authorization && authorization.startsWith('Bearer ')) {
         req.token = authorization.replace('Bearer ', '')
@@ -41,9 +45,27 @@ const tokenExtractor = (req, res, next) => {
     next()
 }
 
+const userExtractor = async (req, res, next) => {
+
+    console.log("The req.token set bu teh prior middleare follows:")
+    console.log(req.token)
+    try {
+        const decodedToken = jwt.verify(req.token, process.env.SECRET)
+        console.log(decodedToken)
+        const user = await User.findById(decodedToken.id)
+        req.user = user
+        console.log("userExtraction has provided req.user with the following value v")
+        console.log(req.user)
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     requestLogger,
     unknownEndpoint,
     errorHandler,
-    tokenExtractor
+    tokenExtractor,
+    userExtractor
 }

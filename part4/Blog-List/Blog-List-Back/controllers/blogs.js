@@ -7,23 +7,28 @@ const User = require('../models/user')
 
 // GET //
 // Get All Blogs //
-blogRouter.get('/', async (request, response) => {
+blogRouter.get('/', async (req, res) => {
+    console.log("user in req.user isw: ")
+    console.log(req.user)
+    console.log(req.user._id)
     const blogs = await Blog
         .find({}).populate('user')
-    response.json(blogs)
+    res.json(blogs)
 })
 
 // POST //
 // Post a new blog
 blogRouter.post('/', async (req, res, next) => {
     try {
+        
         const decodedToken = jwt.verify(req.token, process.env.SECRET)
         console.log("positng new blog --- USER ID below")
         console.log(decodedToken.id)
         if (!decodedToken.id) {
             return response.status(401).json({ error: 'token invalid' })
         }
-        const user = await User.findById(decodedToken.id)
+
+        const user = req.user
 
         console.log("user fetched from DB with ID from above.")
         console.log("That ID for teh fetched user is BLEOW")
@@ -85,6 +90,9 @@ blogRouter.patch('/:id', async (req, res) => {
 // Delete a single blog post 
 blogRouter.delete("/:id", async (req, res, next) => {
     try {
+
+        const user = req.user
+        // The course didnt tell us what to exactly do 
 
         const decodedToken = jwt.verify(req.token, process.env.SECRET)
         const userID = decodedToken.id

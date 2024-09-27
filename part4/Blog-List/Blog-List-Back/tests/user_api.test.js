@@ -84,26 +84,20 @@ describe('when there is initially one user in db', () => {
 
     test('creating a user with a password under 3 chars results in an error and user is not created', async () => { 
         const usersAtStart = await helper.usersInDb();
-        
         const newUser = {
             username: 'longusername',
             name: 'Superuser',
             password: 'a',  // Password less than 3 chars
         };
-        
         const result = await api
             .post('/api/users')
             .send(newUser);
-    
         // Use assert to check the status code and content type
         assert.strictEqual(result.status, 400);  // Ensure 400 status code
         assert.strictEqual(result.headers['content-type'], 'application/json; charset=utf-8');  // Ensure correct content type
-    
         // Use assert to check the error message
         assert(result.body.error.includes('Password must be at least 3 chars long'));  // Ensure correct error message
-    
         const usersAtEnd = await helper.usersInDb();
-        
         // Assert that the number of users hasn't changed
         assert.strictEqual(usersAtEnd.length, usersAtStart.length);  // No new user should be created
     });
