@@ -22,7 +22,6 @@ const login = async (UN, PW) => {
 
 
 // Get all
-
 const getAll = async (jwt) => {
     try {
         const config = {
@@ -39,7 +38,32 @@ const getAll = async (jwt) => {
     }
 };
 
+// Post new 
+const postNewBlog = async (jwt, title, url) => {
+    console.log(jwt);
+    try {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+        };
+
+        const blogData = {
+            title: title,
+            url: url,
+        };
+
+        const response = await axios.post('http://localhost:3003/api/blogs', blogData, config);
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating blog:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
 export default {
     getAll,
-    login
+    login,
+    postNewBlog
 }

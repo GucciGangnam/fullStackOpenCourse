@@ -1,5 +1,15 @@
 .App {}
 
+.New-Blog{
+  display: flex;
+  flex-direction: column;
+
+  width: fit-content;
+  padding: 10px;
+  outline: 1px solid black;
+
+}
+
 .Blog {
   display: flex;
   flex-direction: column;

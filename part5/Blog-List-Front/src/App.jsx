@@ -10,18 +10,18 @@ const App = () => {
   const [jwt, setJwt] = useState(null);
 
 
-  useEffect(() => { 
+  useEffect(() => {
     const lsuser = localStorage.getItem('username')
     const lsjwt = localStorage.getItem('token')
     console.log(lsuser, lsjwt)
     setUser(lsuser)
     setJwt(lsjwt)
-  },[])
+  }, [])
 
 
 
   useEffect(() => {
-    if (jwt){ 
+    if (jwt) {
       blogService.getAll(jwt).then(blogs =>
         setBlogs(blogs)
       )
@@ -57,6 +57,37 @@ const App = () => {
     localStorage.removeItem('username')
     localStorage.removeItem('token')
   }
+
+
+
+  ////// New Blog /////
+  // States 
+  const [title, setTitle] = useState('');
+  const [url, setUrl] = useState('');
+  // Hanldres 
+  const handleChangeTitle = (e) => {
+    setTitle(e.target.value);
+  }
+  const handleChanegURL = (e) => {
+    setUrl(e.target.value);
+  }
+
+  const submitNewBlog = async (e) => {
+    e.preventDefault();
+    console.log(title, url)
+    const data = await blogService.postNewBlog(jwt, title, url)
+    console.log(data)
+    blogService.getAll(jwt).then(blogs =>
+      setBlogs(blogs)
+    )
+  }
+
+
+  //////////////////////
+
+
+
+
 
   // RETURN JSX
 
@@ -100,14 +131,45 @@ const App = () => {
     return (
       <div>
         <button onClick={logout}>
-          Log out 
-          </button>
-          <h1> Hello, {user}</h1>
+          Log out
+        </button>
+        <h1> Hello, {user}</h1>
+
+
+
+
 
         <h2>blogs</h2>
+
+        <div className='New-Blog'>
+
+          <form onSubmit={submitNewBlog}>
+            Create a new blog
+            <input
+              value={title}
+              onChange={handleChangeTitle}
+              placeholder='Title' />
+            <input
+              value={url}
+              onChange={handleChanegURL}
+              placeholder='URL' />
+            <button type='submit'>Add</button>
+          </form>
+
+
+        </div>
+
+
+
+
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
+
+
+
+
+
       </div>
     )
 
