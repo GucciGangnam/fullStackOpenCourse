@@ -9,6 +9,10 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [jwt, setJwt] = useState(null);
 
+  const [failLogin, setFailLogin] = useState(false);
+  const [successLogin, setSuccessLogin] = useState(false);
+  const [successPost, setSuccessPost] = useState(false);
+
 
   useEffect(() => {
     const lsuser = localStorage.getItem('username')
@@ -41,15 +45,28 @@ const App = () => {
     setPassword(e.target.value);
   }
   // Handle log in SUBMIT
-  const hanldeSubmitLogin = async (e) => {
+  const handleSubmitLogin = async (e) => {
     e.preventDefault();
-    const data = await blogService.login(username, password)
-    console.log(data)
-    setUser(data.username)
-    setJwt(data.token)
-    localStorage.setItem('username', data.username)
-    localStorage.setItem('token', data.token)
-  }
+
+    try {
+      const data = await blogService.login(username, password);
+      console.log(data);
+
+      // Set the user data and store it in localStorage
+      setUser(data.username);
+      setJwt(data.token);
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('token', data.token);
+      setSuccessLogin(true)
+      setTimeout(() => {
+        setSuccessLogin(false)
+      }, 2000)
+    } catch (error) {
+      // Handle the error (e.g., show a message to the user, log the error)
+      console.error('Login failed:', error.response?.data || error.message);
+      setFailLogin(true)
+    }
+  };
   ///////////////////
   const logout = () => {
     setUser(null)
@@ -74,13 +91,27 @@ const App = () => {
 
   const submitNewBlog = async (e) => {
     e.preventDefault();
-    console.log(title, url)
-    const data = await blogService.postNewBlog(jwt, title, url)
-    console.log(data)
-    blogService.getAll(jwt).then(blogs =>
-      setBlogs(blogs)
-    )
-  }
+    console.log(title, url);
+
+    try {
+      // Try to post a new blog
+      const data = await blogService.postNewBlog(jwt, title, url);
+      console.log('New blog posted:', data);
+
+      // Fetch the updated list of blogs after successfully posting the new one
+      const blogs = await blogService.getAll(jwt);
+      setBlogs(blogs);
+
+      setSuccessPost(true)
+      setTimeout(() => {
+        setSuccessPost(false)
+      }, 2000)
+
+    } catch (error) {
+      // Handle any error that occurs during blog creation or fetching
+      console.error('Error posting new blog or fetching blogs:', error.response?.data || error.message);
+    }
+  };
 
 
   //////////////////////
@@ -95,31 +126,41 @@ const App = () => {
 
 
     return (
-      <div className='Login'>
-        Please log in to see blogs
-        <form
-          onSubmit={hanldeSubmitLogin}>
 
-          <input
-            value={username}
-            onChange={handleChanegUsername}
-            placeholder='Username'
-            minLength={3}
-            required />
+      <div className='App'>
 
-          <input
-            value={password}
-            onChange={handleChangePassword}
-            placeholder='Password'
-            minLength={3}
-            required />
+        {failLogin && (
+          <div className='Fail'>
+            Login Credentials incorrect
+          </div>
+        )}
 
-          <button
-            type='submit'>
-            Login
-          </button>
+        <div className='Login'>
+          Please log in to see blogs
+          <form
+            onSubmit={handleSubmitLogin}>
 
-        </form>
+            <input
+              value={username}
+              onChange={handleChanegUsername}
+              placeholder='Username'
+              minLength={3}
+              required />
+
+            <input
+              value={password}
+              onChange={handleChangePassword}
+              placeholder='Password'
+              minLength={3}
+              required />
+
+            <button
+              type='submit'>
+              Login
+            </button>
+
+          </form>
+        </div>
       </div>
     )
 
@@ -129,52 +170,55 @@ const App = () => {
 
 
     return (
-      <div>
-        <button onClick={logout}>
-          Log out
-        </button>
-        <h1> Hello, {user}</h1>
 
+      <div className='App'>
 
+        {successPost && (
+          <div className='Success-Post'>
+            Good job submitting that Post buddy!
+          </div>
+        )}
 
-
-
-        <h2>blogs</h2>
-
-        <div className='New-Blog'>
-
-          <form onSubmit={submitNewBlog}>
-            Create a new blog
-            <input
-              value={title}
-              onChange={handleChangeTitle}
-              placeholder='Title' />
-            <input
-              value={url}
-              onChange={handleChanegURL}
-              placeholder='URL' />
-            <button type='submit'>Add</button>
-          </form>
-
-
-        </div>
-
-
-
-
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+        {successLogin && (
+          <div className='Success'>
+            Yay! you logged in!
+          </div>
         )}
 
 
+        <div className='Home'>
 
+          <button onClick={logout}>
+            Log out
+          </button>
+          <h1> Hello, {user}</h1>
 
+          <h2>blogs</h2>
+
+          <div className='New-Blog'>
+            Create a new blog
+            <form onSubmit={submitNewBlog}>
+              <input
+                value={title}
+                onChange={handleChangeTitle}
+                placeholder='Title' />
+              <input
+                value={url}
+                onChange={handleChanegURL}
+                placeholder='URL' />
+              <button type='submit'>Add</button>
+            </form>
+
+          </div>
+
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+
+        </div>
 
       </div>
     )
-
-
-
   }
 
 

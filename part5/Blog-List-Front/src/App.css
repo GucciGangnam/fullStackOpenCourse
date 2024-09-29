@@ -1,12 +1,122 @@
-.App {}
-
-.New-Blog{
+.App {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
+  width: 100vw;
+  height: 100vh;
+}
+
+/* // Log in messages  */
+
+.Fail{ 
+  position: absolute;
+  top: 30px;
+  background-color: rgb(230, 78, 78);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.Success{ 
+  position: absolute;
+  top: 30px;
+  background-color: rgb(57, 187, 52);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.Success-Post{ 
+  position: absolute;
+  top: 30px;
+  background-color: rgb(57, 187, 52);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+
+
+/* // Log in // */
+
+.Login {
+  outline: 2px solid black;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+    }
+
+    button {
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  }
+}
+
+
+/* // Home Page // */
+
+.Home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+
+    input {
+      width: 80%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;;
+      outline: 2px solid rgba(0, 0, 0, 0.5);
+
+    }
+  }
+}
+
+.New-Blog {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: fit-content;
   padding: 10px;
   outline: 1px solid black;
+  margin: 10px;
+  gap: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
 
 }
 
@@ -17,5 +127,9 @@
   width: fit-content;
   padding: 10px;
   outline: 1px solid black;
+  border-radius: 10px;
+
+  width: 400px;
+  max-width: 90%;
 
 }

@@ -34,6 +34,8 @@ const getAll = async (jwt) => {
         return response.data;
     } catch (error) {
         console.error('Error fetching blogs:', error.response?.data || error.message);
+        localStorage.removeItem("username");
+        localStorage.removeItem("token");
         throw error;
     }
 };
@@ -47,15 +49,14 @@ const postNewBlog = async (jwt, title, url) => {
                 Authorization: `Bearer ${jwt}`,
             },
         };
-
         const blogData = {
             title: title,
             url: url,
         };
-
         const response = await axios.post('http://localhost:3003/api/blogs', blogData, config);
         console.log(response.data);
         return response.data;
+
     } catch (error) {
         console.error('Error creating blog:', error.response?.data || error.message);
         throw error;
