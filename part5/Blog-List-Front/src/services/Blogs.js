@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 
+
 // Log in 
 const login = async (UN, PW) => {
     const credentials = {
@@ -63,8 +64,33 @@ const postNewBlog = async (jwt, title, url) => {
     }
 };
 
+
+// Patch 
+const incrementLike = async (blogID) => {
+    console.log("Start blog service like adder");
+    console.log(blogID);
+    const jwt = localStorage.getItem('token');
+    console.log(jwt);
+
+    try {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+        };
+
+        // Pass empty body ({}), and then the config for headers
+        const response = await axios.patch(`http://localhost:3003/api/blogs/likes/${blogID}`, {}, config);
+        console.log(response.data);
+    } catch (error) {
+        console.log('Error adding like');
+        console.log(error.response?.data || error.message);
+    }
+};
+
 export default {
     getAll,
     login,
-    postNewBlog
+    postNewBlog,
+    incrementLike
 }
