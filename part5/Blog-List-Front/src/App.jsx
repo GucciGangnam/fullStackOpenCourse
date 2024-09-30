@@ -3,6 +3,8 @@ import Blog from './componenets/Blog'
 import blogService from './services/Blogs'
 // Styles 
 import "./App.css"
+// ompoenents 
+import { NewBlogForm } from './componenets/NewBlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -197,30 +199,7 @@ const App = () => {
 
           <h2>blogs</h2>
 
-          {isCreateFormShowing ? (
-            <div className='New-Blog'>
-              Create a new blog
-              <form onSubmit={submitNewBlog}>
-                <input
-                  value={title}
-                  onChange={handleChangeTitle}
-                  placeholder='Title' />
-                <input
-                  value={url}
-                  onChange={handleChanegURL}
-                  placeholder='URL' />
-                <button type='submit'>Add</button>
-                <button
-                  onClick={() => { setIsCreateFormShowing(false) }}>Cancel</button>
-              </form>
-            </div>
-          ) : (
-            <button
-              onClick={() => { setIsCreateFormShowing(true) }}
-            >Add New Blog</button>
-          )}
-
-
+          <NewBlogForm isCreateFormShowing={isCreateFormShowing} submitNewBlog={submitNewBlog} title={title} handleChangeTitle={handleChangeTitle} url={url} handleChanegURL={handleChanegURL} setIsCreateFormShowing={setIsCreateFormShowing}/>
 
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
