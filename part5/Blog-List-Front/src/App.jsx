@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import Blog from './componenets/Blog'
+import { Blog } from './componenets/Blog'
 import blogService from './services/Blogs'
 // Styles 
 import "./App.css"
@@ -202,7 +202,9 @@ const App = () => {
           <NewBlogForm isCreateFormShowing={isCreateFormShowing} submitNewBlog={submitNewBlog} title={title} handleChangeTitle={handleChangeTitle} url={url} handleChanegURL={handleChanegURL} setIsCreateFormShowing={setIsCreateFormShowing}/>
 
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog
+            key={blog.id}
+            blog={blog} />
           )}
 
         </div>
