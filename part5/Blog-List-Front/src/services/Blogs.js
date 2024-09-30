@@ -1,4 +1,5 @@
 import axios from 'axios'
+const baseURL = 'http://localhost:3003/api'
 
 
 
@@ -10,7 +11,7 @@ const login = async (UN, PW) => {
     };
 
     try {
-        const response = await axios.post('http://localhost:3003/api/login', credentials);
+        const response = await axios.post(`${baseURL}/login`, credentials);
         // console.log('Login successful:', response.data);
         return response.data;  // Return the response if needed
     } catch (error) {
@@ -30,7 +31,7 @@ const getAll = async (jwt) => {
                 Authorization: `Bearer ${jwt}`,
             },
         };
-        const response = await axios.get('http://localhost:3003/api/blogs', config);
+        const response = await axios.get(`${baseURL}/blogs`, config);
         console.log(response.data);
         return response.data;
     } catch (error) {
@@ -54,7 +55,7 @@ const postNewBlog = async (jwt, title, url) => {
             title: title,
             url: url,
         };
-        const response = await axios.post('http://localhost:3003/api/blogs', blogData, config);
+        const response = await axios.post(`${baseURL}/blogs`, blogData, config);
         console.log(response.data);
         return response.data;
 
@@ -79,8 +80,7 @@ const incrementLike = async (blogID) => {
             },
         };
 
-        // Pass empty body ({}), and then the config for headers
-        const response = await axios.patch(`http://localhost:3003/api/blogs/likes/${blogID}`, {}, config);
+        const response = await axios.patch(`${baseURL}/blogs/likes/${blogID}`, {}, config);
         console.log(response.data);
     } catch (error) {
         console.log('Error adding like');
@@ -88,9 +88,31 @@ const incrementLike = async (blogID) => {
     }
 };
 
+// Delete 
+// Delete Blog 
+const deleteBlog = async (blogID) => {
+    const jwt = localStorage.getItem('token');
+    console.log("Blog ID:", blogID);
+    console.log("JWT Token:", jwt);
+    try {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${jwt}`,
+            },
+        };
+        const response = await axios.delete(`${baseURL}/blogs/${blogID}`, config);
+        console.log("Response Data:", response.data);
+    } catch (error) {
+        console.log('Error deleting blog');
+        console.log(error.response?.data || error.message);
+    }
+};
+
+
 export default {
     getAll,
     login,
     postNewBlog,
-    incrementLike
+    incrementLike,
+    deleteBlog
 }
