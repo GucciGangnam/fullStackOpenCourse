@@ -13,6 +13,8 @@ const App = () => {
   const [successLogin, setSuccessLogin] = useState(false);
   const [successPost, setSuccessPost] = useState(false);
 
+  const [isCreateFormShowing, setIsCreateFormShowing] = useState(false)
+
 
   useEffect(() => {
     const lsuser = localStorage.getItem('username')
@@ -195,21 +197,30 @@ const App = () => {
 
           <h2>blogs</h2>
 
-          <div className='New-Blog'>
-            Create a new blog
-            <form onSubmit={submitNewBlog}>
-              <input
-                value={title}
-                onChange={handleChangeTitle}
-                placeholder='Title' />
-              <input
-                value={url}
-                onChange={handleChanegURL}
-                placeholder='URL' />
-              <button type='submit'>Add</button>
-            </form>
+          {isCreateFormShowing ? (
+            <div className='New-Blog'>
+              Create a new blog
+              <form onSubmit={submitNewBlog}>
+                <input
+                  value={title}
+                  onChange={handleChangeTitle}
+                  placeholder='Title' />
+                <input
+                  value={url}
+                  onChange={handleChanegURL}
+                  placeholder='URL' />
+                <button type='submit'>Add</button>
+                <button
+                  onClick={() => { setIsCreateFormShowing(false) }}>Cancel</button>
+              </form>
+            </div>
+          ) : (
+            <button
+              onClick={() => { setIsCreateFormShowing(true) }}
+            >Add New Blog</button>
+          )}
 
-          </div>
+
 
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
