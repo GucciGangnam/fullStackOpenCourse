@@ -69,10 +69,6 @@ export const Blog = ({ blog, setBlogs }) => {
                 </>
             )}
 
-
-
-
-
         </div>
     )
 }
