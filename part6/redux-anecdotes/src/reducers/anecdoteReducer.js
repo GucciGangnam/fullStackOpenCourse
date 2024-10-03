@@ -32,7 +32,16 @@ const reducer = (state = initialState, action) => {
         anecdote.id !== id ? anecdote : changedAnecdote
       )
     }
+    case 'ADD_ANECDOTE': {
+      const newAnecdote = {
+        content: action.data.content,
+        id: getId(),
+        votes: 0
+      }
+      return [...state, newAnecdote]
+    }
     default:
+      console.error("That dispatch method isnt built yet")
       return state
   }
 }
