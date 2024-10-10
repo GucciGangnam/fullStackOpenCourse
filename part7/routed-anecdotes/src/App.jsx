@@ -1,6 +1,9 @@
 import { useState } from 'react'
 // import ReactDOM from 'react-dom/client'
-import { BrowserRouter as Router, Routes, Route, Link, useParams, useMatch } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link, useParams, useMatch, useNavigate } from 'react-router-dom'
+// Styles 
+import "./App.css"
+
 
 const Menu = () => {
   const padding = {
@@ -19,7 +22,8 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul style={{ display: 'flex', flexDirection: 'column' }}>
-      {anecdotes.map(anecdote => <Link to={`/anecdote/${anecdote.id}`} key={anecdote.id} >{anecdote.content}</Link>)}
+      {anecdotes.map(anecdote => <Link
+        to={`/anecdote/${anecdote.id}`} key={anecdote.id}>{anecdote.content}</Link>)}
     </ul>
   </div>
 )
@@ -63,12 +67,14 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
+  const navigate = useNavigate();
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
 
   const handleSubmit = (e) => {
+
     e.preventDefault()
     props.addNew({
       content,
@@ -76,6 +82,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+
+    navigate('/')
   }
 
   return (
@@ -119,11 +127,15 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState(false)
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(true)
+    setTimeout(() => {
+      setNotification(false);
+    }, 5000)
   }
 
   const anecdoteById = (id) =>
@@ -142,16 +154,23 @@ const App = () => {
 
 
   const match = useMatch('/anecdote/:id')
-  const anecdote = match 
+  const anecdote = match
     ? anecdotes.find(a => a.id === Number(match.params.id))
     : null
 
   return (
     <>
+
+      {notification && (
+        <div className='Notification'>
+          Anecdote Sucesfully added
+        </div>
+      )}
+
       <h1>Software anecdotes</h1>
       <Menu />
       <Routes>
-        <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
+        <Route path="/" element={<AnecdoteList anecdotes={anecdotes} notification={notification} />} />
         <Route path="/anecdote/:id" element={<SingleAnecdote anecdote={anecdote} />} />
         <Route path="/about" element={<About />} />
         <Route path="/createnew" element={<CreateNew addNew={addNew} />} />

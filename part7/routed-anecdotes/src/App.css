@@ -1,0 +1,32 @@
+.App {}
+
+
+.Notification {
+    background-color: rgb(56, 164, 34);
+    padding: 10px;
+    border-radius: 25px;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    width: 20px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: expand-shrink 5s ease-in-out forwards; /* 5 seconds in total */
+}
+
+@keyframes expand-shrink {
+    0% {
+        width: 20px;
+    }
+    10% {
+        width: 200px;
+    }
+    90% {
+        width: 200px;
+    }
+    100% {
+        width: 20px;
+    }
+}
