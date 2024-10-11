@@ -71,11 +71,8 @@ const Footer = () => (
 
 //////// CREAT EEW ANECDOTE START
 
-
-
 const CreateNew = (props) => {
   const navigate = useNavigate();
-
   const content = useField('text');
   const author = useField('text');
   const info = useField('text');
@@ -89,6 +86,12 @@ const CreateNew = (props) => {
       votes: 0
     })
     navigate('/')
+  }
+
+  const handleClearFields = () => { 
+    content.clear();
+    author.clear();
+    info.clear();
   }
 
   //////// CREAT EEW ANECDOTE FINISH
@@ -109,7 +112,8 @@ const CreateNew = (props) => {
           url for more info
           <input {...info} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button type='button' onClick={handleClearFields}>Clear Fields</button>
       </form>
     </div>
   )
